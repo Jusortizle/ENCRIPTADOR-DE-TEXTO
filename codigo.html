@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensaje Oculto</title>
+    <link rel="stylesheet" href="./style/style.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="header__menu">
+            <img class="logoAlura" src="./assets/alura.png" alt="Logo Alura">
+        </nav>
+    </header>
+
+    <main class="presentacion">
+        <section class="presentacion__contenido">
+            <h1 class="presentacion__contenido__titulo">
+                RESULTADO DEL
+                <strong class="titulo-destaque">TEXTO</strong>
+            </h1>
+
+            <p id="mensajeTipoOperacion" class="presentacion__contenido__texto"></p>
+
+            <!-- Contenedor para los botones de copiar y volver -->
+            <div class="boton-group">
+                <a href="#" id="copiarTexto" class="Boton_Copiar" onclick="copiarTexto()">
+                    COPIAR TEXTO
+                </a>
+                <a href="#" class="Boton_Volver" onclick="volverAlOrigen()">VOLVER</a>
+            </div>
+        </section>
+
+        <section class="presentacion_derecha">
+            <h2 class="resultado__titulo">Texto</h2>
+            <div id="resultado" class="resultado"></div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>Juan Ortiz León - 2024</p>
+    </footer>
+
+    <script>
+        // Función para obtener parámetros de la URL
+        function obtenerParametroURL(nombre) {
+            let url = new URL(window.location.href);
+            return url.searchParams.get(nombre);
+        }
+
+        window.onload = function() {
+            let texto = obtenerParametroURL("texto");
+            let tipoOperacion = obtenerParametroURL("accion"); // Cambiado de tipoOperacion a accion
+            let resultadoElement = document.getElementById("resultado");
+            let mensajeTipoOperacionElement = document.getElementById("mensajeTipoOperacion");
+
+            if (texto) {
+                resultadoElement.textContent = texto;
+                if (tipoOperacion === "encriptar") {
+                    mensajeTipoOperacionElement.textContent = "El texto ha sido encriptado.";
+                } else if (tipoOperacion === "descifrar") {
+                    mensajeTipoOperacionElement.textContent = "El texto ha sido desencriptado.";
+                } else {
+                    mensajeTipoOperacionElement.textContent = "Resultado del texto.";
+                }
+            } else {
+                resultadoElement.textContent = "No hay texto disponible.";
+                mensajeTipoOperacionElement.textContent = "No se pudo determinar la operación.";
+            }
+        }
+
+        // Función para copiar el texto encriptado/desencriptado
+        function copiarTexto() {
+            let textoResultado = document.getElementById("resultado").textContent;
+
+            if (textoResultado.trim() === "") {
+                alert("No hay texto para copiar.");
+                return;
+            }
+
+            let areaTexto = document.createElement("textarea");
+            areaTexto.value = textoResultado;
+            document.body.appendChild(areaTexto);
+            areaTexto.select();
+            document.execCommand("copy");
+            document.body.removeChild(areaTexto);
+
+            alert("Texto copiado al portapapeles!");
+        }
+
+        // Función para volver al archivo HTML desktop 1.html
+        function volverAlOrigen() {
+            window.location.href = "desktop 1.html"; // Redirige al archivo desktop1.html
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encriptador de texto</title>
+    <link rel="stylesheet" href="./style/style.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="header__menu">
+            <img class="logoAlura" src="./assets/alura.png" alt="Logo Alura">
+        </nav>
+    </header>
+
+    <main class="presentacion">
+        <section class="presentacion__contenido">
+            <textarea id="textoACifrar" rows="4" cols="50" placeholder="Escribe el texto aquí..."></textarea>
+
+            <h1 class="presentacion__contenido__titulo">
+                ENCRIPTADOR
+                <strong class="titulo-destaque">DE TEXTO</strong>
+            </h1>
+
+            <p class="presentacion__contenido__texto">
+                Podrás enviar mensajes a tus amigos y mantener tus secretos ocultos.
+            </p>
+
+            <h2 class="presentacion__enlaces__subtitulo"></h2>
+
+            <div class="Botones">
+                <a href="#" class="Boton_Encriptar" onclick="cifrar()">ENCRIPTAR</a>
+                <a href="#" class="Boton_Desencriptar" onclick="descifrar()">DESENCRIPTAR</a>
+            </div>
+
+            <p class="mensaje-validacion">Se permiten letras, números y caracteres especiales.</p> 
+            <p id="mensajeTextoVacio" class="mensaje-validacion" style="display:none;">No has introducido ningún mensaje para encriptar.</p>
+        </section>
+
+        <section class="presentacion_derecha">
+            <img class="BuscarTexto" src="./assets/Buscando 2.png" alt="Imagen de búsqueda de texto">
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>Juan Ortiz León - 2024</p>
+    </footer>
+
+    <script>
+        // Definir alfabeto y cifrado irreversible incluyendo caracteres especiales y saltos de línea
+        const original = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 !@#$%^&*()-_=+[]{}|;:',.<>/?\n";
+        const cifrado = "!@#$%^&*()-_=+[]{}|;:',.<>/?abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\n";
+
+        // Marcador especial para los saltos de línea
+        const LINE_BREAK_MARKER = 'LINE_BREAK';
+
+        function cifrar() {
+            let textoOriginal = document.getElementById("textoACifrar").value;
+
+            // Validación para caracteres especiales
+            if (/[^a-zA-Z0-9 !@#$%^&*()\-_+=\[\]{}|;:',.<>/?\n]/.test(textoOriginal)) {
+                document.querySelector(".mensaje-validacion").textContent = "Se permiten letras, números y caracteres especiales.";
+                document.getElementById("resultado").textContent = ""; 
+
+                // Mostrar mensaje si el campo está vacío
+                if (textoOriginal.trim() === "") {
+                    document.getElementById("mensajeTextoVacio").style.display = "block";
+                } else {
+                    document.getElementById("mensajeTextoVacio").style.display = "none";
+                }
+
+                return;
+            } else {
+                document.querySelector(".mensaje-validacion").textContent = ""; 
+                document.getElementById("mensajeTextoVacio").style.display = "none";
+            }
+
+            // Lógica de cifrado irreversible (sustitución)
+            let textoCifrado = "";
+
+            for (let i = 0; i < textoOriginal.length; i++) {
+                let letra = textoOriginal[i];
+                if (letra === '\n') {
+                    textoCifrado += LINE_BREAK_MARKER; // Reemplaza saltos de línea con 'LINE_BREAK'
+                } else {
+                    let indice = original.indexOf(letra);
+                    if (indice !== -1) {
+                        textoCifrado += cifrado[indice];
+                    } else {
+                        textoCifrado += letra; // Conservar caracteres no mapeados
+                    }
+                }
+            }
+
+            // Redireccionar a codigo.html con el texto encriptado y la acción encriptar
+            window.location.href = `codigo.html?texto=${encodeURIComponent(textoCifrado)}&accion=encriptar`; 
+        }
+
+        function descifrar() {
+            let textoCifrado = document.getElementById("textoACifrar").value;
+
+            // Validación para caracteres especiales
+            if (/[^!@#$%^&*()\-_+=\[\]{}|;:',.<>/?abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 LINE_BREAK_MARKER]/.test(textoCifrado)) {
+                document.querySelector(".mensaje-validacion").textContent = "Se permiten letras, números y caracteres especiales.";
+                document.getElementById("resultado").textContent = ""; 
+
+                // Mostrar mensaje si el campo está vacío
+                if (textoCifrado.trim() === "") {
+                    document.getElementById("mensajeTextoVacio").style.display = "block";
+                } else {
+                    document.getElementById("mensajeTextoVacio").style.display = "none";
+                }
+
+                return;
+            } else {
+                document.querySelector(".mensaje-validacion").textContent = ""; 
+                document.getElementById("mensajeTextoVacio").style.display = "none";
+            }
+
+            // Lógica de descifrado irreversible (sustitución)
+            let textoOriginal = "";
+
+            // Reemplaza 'LINE_BREAK_MARKER' con salto de línea antes de decodificar
+            textoCifrado = textoCifrado.replace(new RegExp(LINE_BREAK_MARKER, 'g'), '\n');
+
+            for (let i = 0; i < textoCifrado.length; i++) {
+                let letra = textoCifrado[i];
+                let indice = cifrado.indexOf(letra);
+                if (indice !== -1) {
+                    textoOriginal += original[indice];
+                } else {
+                    textoOriginal += letra; // Conservar caracteres no mapeados
+                }
+            }
+
+            // Redireccionar a codigo.html con el texto desencriptado y la acción descifrar
+            window.location.href = `codigo.html?texto=${encodeURIComponent(textoOriginal)}&accion=descifrar`; 
+        }
+    </script>
+</body>
+</html>
